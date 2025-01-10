@@ -18,6 +18,14 @@ namespace Starsector_QuickPack
                     return true;
                 }
             }
+            foreach (string s in Variables.blacklistFromRoot)
+            {
+                string blacklistedPath = Path.GetFullPath(Variables.modPath + s);
+                if (path.Contains(blacklistedPath))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -106,7 +114,9 @@ namespace Starsector_QuickPack
             {
                 packDirectory(dir, zip);
             }
+            Clipboard.SetText(Variables.modVer);
             MessageBox.Show("Successfully packed to:\n"+Variables.modPackZipPath, "QuickPack");
+
         }
 
         public static void packDirectory(string dir, ZipArchive zip)
@@ -117,7 +127,7 @@ namespace Starsector_QuickPack
                 {
                     continue;
                 }
-                string packPath = file.Replace(Variables.modPath, "").Replace("\\", "/").Substring(1);
+                string packPath = file.Replace(Directory.GetParent(Variables.modPath).FullName, "").Replace("\\", "/").Substring(1);
                 Console.WriteLine("Packing " + file + " to " + packPath);
                 zip.CreateEntryFromFile(@file, packPath);
             }
